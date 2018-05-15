@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                     else {
-
+                        alertUserAboutError(error_dialog, tag);
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "IO Exception caught: ", e);
@@ -59,5 +59,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
     Log.d(TAG, "Main UI code is running, yay!");
+    }
+
+    private void alertUserAboutError(String error_dialog, String tag) {
+        AlertDialogFragment dialog = new AlertDialogFragment();
+        dialog.show(getFragmentManager(),"error_dialog");
     }
 }
