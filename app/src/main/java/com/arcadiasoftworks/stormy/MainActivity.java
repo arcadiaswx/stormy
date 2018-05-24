@@ -1,12 +1,16 @@
 package com.arcadiasoftworks.stormy;
 
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,25 +24,36 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.internal.tls.OkHostnameVerifier;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private CurrentWeather currentWeather;
+    private ImageView iconImageView;
+
+    double latitude = 37.8267;
+    double longitude = -122.4233;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
+        getForecast(latitude, longitude);
+        Log.d(TAG, "Main UI code is running, hooray!");
+    }
+
+    private void getForecast(double latitude, double longitude) {
+        final ActivityMainBinding binding = DataBindingUtil
+                .setContentView(MainActivity.this, R.layout.activity_main);
+
+        iconImageView = findViewById(R.id.iconImageView);
+
+        // Setup Dark Sky Link
         TextView darkSky = findViewById(R.id.darkSkyAttribution);
-
         darkSky.setMovementMethod(LinkMovementMethod.getInstance());
 
         String apiKey = "a371e6cef5025d37a4a1039c6d26009b";
-
-        double latitude = 37.8267;
-        double longitude = -122.4233;
 
         String forecastURL = "https://api.darksky.net/forecast/"
                 + apiKey + "/" + latitude + "," + longitude;
@@ -61,9 +76,30 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call call, Response response) throws IOException {
                     try {
                         String jsonData = response.body().string();
-                        Log.e(TAG, jsonData);
+                        Log.v(TAG, jsonData);
                         if (response.isSuccessful()) {
                             currentWeather = getCurrentDetails(jsonData);
+
+                            final CurrentWeather displayWeather = new CurrentWeather(
+                                    currentWeather.getLocationLabel(),
+                                    currentWeather.getIcon(),
+                                    currentWeather.getTime(),
+                                    currentWeather.getTemperature(),
+                                    currentWeather.getHumidity(),
+                                    currentWeather.getPrecipChance(),
+                                    currentWeather.getSummary(),
+                                    currentWeather.getTimeZone()
+                            );
+
+                            binding.setWeather(displayWeather);
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Drawable drawable = getResources().getDrawable(displayWeather.getIconId());
+                                    iconImageView.setImageDrawable(drawable);
+                                }
+                            });
 
                         } else {
                             alertUserAboutError();
@@ -76,7 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-        Log.d(TAG, "Main UI code is running, yay!");
+        else {
+            Toast.makeText(this, R.string.network_unavailable_message,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
@@ -88,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         JSONObject currently = forecast.getJSONObject("currently");
 
         CurrentWeather currentWeather = new CurrentWeather();
-
 
         // Parse weather data from currently object
         currentWeather.setHumidity(currently.getDouble("humidity"));
@@ -124,5 +162,10 @@ public class MainActivity extends AppCompatActivity {
     private void alertUserAboutError() {
         AlertDialogFragment dialog = new AlertDialogFragment();
         dialog.show(getFragmentManager(),"error_dialog");
+    }
+
+    public void refreshOnClick(View view) {
+        getForecast(latitude, longitude);
+        Toast.makeText(this, "Refreshing data", Toast.LENGTH_LONG).show();
     }
 }
