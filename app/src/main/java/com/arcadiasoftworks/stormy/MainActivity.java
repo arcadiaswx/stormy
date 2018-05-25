@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     // Setup Dark Sky Link
     TextView darkSky = findViewById(R.id.darkSkyAttribution);
     darkSky.setMovementMethod(LinkMovementMethod.getInstance());
+    
 
     String apiKey = "57eaf3aa961968bf65b0619680588073";
 
