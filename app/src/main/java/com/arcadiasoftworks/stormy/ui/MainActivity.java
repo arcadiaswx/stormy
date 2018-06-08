@@ -1,4 +1,4 @@
-package com.arcadiasoftworks.stormy;
+package com.arcadiasoftworks.stormy.ui;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
@@ -8,14 +8,18 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.arcadiasoftworks.stormy.R;
+import com.arcadiasoftworks.stormy.weather.Current;
 import com.arcadiasoftworks.stormy.databinding.ActivityMainBinding;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -26,12 +30,12 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.internal.tls.OkHostnameVerifier;
+
 
 public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = MainActivity.class.getSimpleName();
-  private CurrentWeather currentWeather;
+  private Current current;
   private ImageView iconImageView;
 
   double latitude = 37.8267;
@@ -42,32 +46,29 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     getForecast(latitude, longitude);
-    Log.d(TAG, "Main UI code is running, hooray!");
+    Log.d(TAG, "Main UI code is running!");
   }
 
   private void getForecast(double latitude, double longitude) {
     final ActivityMainBinding binding = DataBindingUtil
-        .setContentView(MainActivity.this, R.layout.activity_main);
+            .setContentView(MainActivity.this, R.layout.activity_main);
 
     iconImageView = findViewById(R.id.iconImageView);
 
     // Setup Dark Sky Link
     TextView darkSky = findViewById(R.id.darkSkyAttribution);
     darkSky.setMovementMethod(LinkMovementMethod.getInstance());
-    
 
-    String apiKey = "57eaf3aa961968bf65b0619680588073";
-
-
+    String apiKey = "a371e6cef5025d37a4a1039c6d26009b";
     String forecastURL = "https://api.darksky.net/forecast/" + apiKey +
-        "/" + latitude + "," + longitude;
+            "/" + latitude + "," + longitude;
 
     if (isNetworkAvailable()) {
       OkHttpClient client = new OkHttpClient();
 
       Request request = new Request.Builder()
-          .url(forecastURL)
-          .build();
+              .url(forecastURL)
+              .build();
 
       Call call = client.newCall(request);
       call.enqueue(new Callback() {
@@ -82,17 +83,17 @@ public class MainActivity extends AppCompatActivity {
             String jsonData = response.body().string();
             Log.v(TAG, jsonData);
             if (response.isSuccessful()) {
-              currentWeather = getCurrentDetails(jsonData);
+              current = getCurrentDetails(jsonData);
 
-              final CurrentWeather displayWeather = new CurrentWeather(
-                  currentWeather.getLocationLabel(),
-                  currentWeather.getIcon(),
-                  currentWeather.getTime(),
-                  currentWeather.getTemperature(),
-                  currentWeather.getHumidity(),
-                  currentWeather.getPrecipChance(),
-                  currentWeather.getSummary(),
-                  currentWeather.getTimeZone()
+              final Current displayWeather = new Current(
+                      current.getLocationLabel(),
+                      current.getIcon(),
+                      current.getTime(),
+                      current.getTemperature(),
+                      current.getHumidity(),
+                      current.getPrecipChance(),
+                      current.getSummary(),
+                      current.getTimeZone()
               );
 
               binding.setWeather(displayWeather);
@@ -118,12 +119,12 @@ public class MainActivity extends AppCompatActivity {
       });
     }
     else {
-      Toast.makeText(this, R.string.network_unavailable_message,
-          Toast.LENGTH_LONG).show();
+      Toast.makeText(this, getString(R.string.network_unavailable_message),
+              Toast.LENGTH_LONG).show();
     }
   }
 
-  private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+  private Current getCurrentDetails(String jsonData) throws JSONException {
     JSONObject forecast = new JSONObject(jsonData);
 
     String timezone = forecast.getString("timezone");
@@ -131,25 +132,26 @@ public class MainActivity extends AppCompatActivity {
 
     JSONObject currently = forecast.getJSONObject("currently");
 
-    CurrentWeather currentWeather = new CurrentWeather();
+    Current current = new Current();
 
     // Parse weather data from currently object
-    currentWeather.setHumidity(currently.getDouble("humidity"));
-    currentWeather.setTime(currently.getLong("time"));
-    currentWeather.setIcon(currently.getString("icon"));
-    currentWeather.setLocationLabel("Alcatraz Island, CA");
-    currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
-    currentWeather.setSummary(currently.getString("summary"));
-    currentWeather.setTemperature(currently.getDouble("temperature"));
-    currentWeather.setTimeZone(timezone);
+    current.setHumidity(currently.getDouble("humidity"));
+    current.setTime(currently.getLong("time"));
+    current.setIcon(currently.getString("icon"));
+    current.setLocationLabel("Alcatraz Island, CA");
+    current.setPrecipChance(currently.getDouble("precipProbability"));
+    current.setSummary(currently.getString("summary"));
+    current.setTemperature(currently.getDouble("temperature"));
+    current.setTimeZone(timezone);
 
-    Log.d(TAG, currentWeather.getFormattedTime());
+    Log.d(TAG, current.getFormattedTime());
 
-    return currentWeather;
+    return current;
   }
 
   private boolean isNetworkAvailable() {
-    ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    ConnectivityManager manager = (ConnectivityManager)
+            getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
     boolean isAvailable = false;
@@ -170,5 +172,4 @@ public class MainActivity extends AppCompatActivity {
     getForecast(latitude, longitude);
     Toast.makeText(this, "Refreshing data", Toast.LENGTH_LONG).show();
   }
-
 }
