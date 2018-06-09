@@ -61,6 +61,9 @@
             android:layout_toEndOf="@+id/iconImageView"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="TextView" />
+            android:text="@{String.valueOf(hour.summary)}"
+            android:textColor="@android:color/white"
+            android:textSize="24sp"
+            tools:text="Partly Cloudy"/>
     </RelativeLayout>
 </layout>
