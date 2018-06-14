@@ -1,27 +1,37 @@
 package com.arcadiasoftworks.stormy.weather;
 
 
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
+
+import java.util.Date;
+
+
 public class Hour {
     private long time;
     private String summary;
     private double temperature;
     private String icon;
-    private String timezone;
+    private String timeZone;
 
 
     public Hour() {
     }
 
-    public Hour(long time, String summary, double temperature, String icon, String timezone) {
+    public Hour(long time, String summary, double temperature, String icon, String timeZone) {
         this.time = time;
         this.summary = summary;
         this.temperature = temperature;
         this.icon = icon;
-        this.timezone = timezone;
+        this.timeZone = timeZone;
     }
 
-    public long getTime() {
-        return time;
+    public String getTime() {
+        SimpleDateFormat formatter = new SimpleDateFormat("h a");
+        formatter.setTimeZone(TimeZone.getTimeZone(timeZone));
+
+        Date dateTime = new Date(time * 1000);
+        return formatter.format(dateTime);
     }
 
     public void setTime(long time) {
@@ -37,7 +47,7 @@ public class Hour {
     }
 
     public double getTemperature() {
-        return temperature;
+        return (int)Math.round(temperature);
     }
 
     public void setTemperature(double temperature) {
@@ -53,7 +63,7 @@ public class Hour {
     }
 
     public String getTimeZone() {
-        return timezone;
+        return timeZone;
     }
 
     public void setTimeZone(String timezone) {
