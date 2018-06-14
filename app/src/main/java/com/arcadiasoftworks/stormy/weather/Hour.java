@@ -4,10 +4,11 @@ package com.arcadiasoftworks.stormy.weather;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
-public class Hour {
+public class Hour implements Serializable {
     private long time;
     private String summary;
     private double temperature;
@@ -54,8 +55,8 @@ public class Hour {
         temperature = temperature;
     }
 
-    public String getIcon() {
-        return icon;
+    public int getIcon() {
+        return Forecast.getIconId(icon);
     }
 
     public void setIcon(String icon) {
