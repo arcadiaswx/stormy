@@ -1,75 +1,66 @@
-package com.arcadiasoftworks.stormy.weather;
+package com.arcadiasoftworks.stormy.Weather;
+
 
 import com.arcadiasoftworks.stormy.R;
 
-/**
- * Created by ${user} on ${date}
- */
 public class Forecast {
-    private Current mCurrent;
-    private Hour[] mHourlyForecast;
-    private Day[] mDailyForecast;
 
-    public Current getCurrent() {
-        return mCurrent;
+  private Current current;
+  private Hour[] hourlyForecast;
+
+  public Current getCurrent() {
+    return current;
+  }
+
+  public void setCurrent(Current current) {
+    this.current = current;
+  }
+
+  public Hour[] getHourlyForecast() {
+    return hourlyForecast;
+  }
+
+  public void setHourlyForecast(Hour[] hourlyForecast) {
+    this.hourlyForecast = hourlyForecast;
+  }
+
+  public static int getIconId(String iconString) {
+    int iconId = R.drawable.clear_day;
+
+    switch(iconString) {
+      case "clear-day":
+        iconId = R.drawable.clear_day;
+        break;
+      case "clear-night":
+        iconId = R.drawable.clear_night;
+        break;
+      case "rain":
+        iconId = R.drawable.rain;
+        break;
+      case "snow":
+        iconId = R.drawable.snow;
+        break;
+      case "sleet":
+        iconId = R.drawable.sleet;
+        break;
+      case "wind":
+        iconId = R.drawable.wind;
+        break;
+      case "fog":
+        iconId = R.drawable.fog;
+        break;
+      case "cloudy":
+        iconId = R.drawable.cloudy;
+        break;
+      case "partly-cloudy-day":
+        iconId = R.drawable.partly_cloudy;
+        break;
+      case "partly-cloudy-night":
+        iconId = R.drawable.cloudy_night;
+        break;
     }
 
-    public void setCurrent(Current current) {
-        mCurrent = current;
-    }
+    return iconId;
+  }
 
-    public Hour[] getHourlyForecast() {
-        return mHourlyForecast;
-    }
-
-    public void setHourlyForecast(Hour[] hourlyForecast) {
-        mHourlyForecast = hourlyForecast;
-    }
-
-    public Day[] getDailyForecast() {
-        return mDailyForecast;
-    }
-
-    public void setDailyForecast(Day[] dailyForecast) {
-        mDailyForecast = dailyForecast;
-    }
-
-    public static int getIconId(String iconString){
-        int iconId = R.drawable.clear_day;
-
-        switch(iconString) {
-            case "clear-day":
-                iconId = R.drawable.clear_day;
-                break;
-            case "clear-night":
-                iconId = R.drawable.clear_night;
-                break;
-            case "rain":
-                iconId = R.drawable.rain;
-                break;
-            case "snow":
-                iconId = R.drawable.snow;
-                break;
-            case "sleet":
-                iconId = R.drawable.sleet;
-                break;
-            case "wind":
-                iconId = R.drawable.wind;
-                break;
-            case "fog":
-                iconId = R.drawable.fog;
-                break;
-            case "cloudy":
-                iconId = R.drawable.cloudy;
-                break;
-            case "partly-cloudy-day":
-                iconId = R.drawable.partly_cloudy;
-                break;
-            case "partly-cloudy-night":
-                iconId = R.drawable.cloudy_night;
-                break;
-        }
-
-        return iconId;
-    }
 }

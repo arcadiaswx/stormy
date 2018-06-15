@@ -9,7 +9,6 @@ import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,10 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.arcadiasoftworks.stormy.R;
-import com.arcadiasoftworks.stormy.weather.Current;
+import com.arcadiasoftworks.stormy.Weather.Current;
+import com.arcadiasoftworks.stormy.Weather.Forecast;
+import com.arcadiasoftworks.stormy.Weather.Hour;
 import com.arcadiasoftworks.stormy.databinding.ActivityMainBinding;
-import com.arcadiasoftworks.stormy.weather.Forecast;
-import com.arcadiasoftworks.stormy.weather.Hour;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,7 +36,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-
 public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = MainActivity.class.getSimpleName();
@@ -52,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
 
     getForecast(latitude, longitude);
-    Log.d(TAG, "Main UI code is running!");
+    Log.d(TAG, "Main UI code is running, hooray!");
   }
 
   private void getForecast(double latitude, double longitude) {
     final ActivityMainBinding binding = DataBindingUtil
-            .setContentView(MainActivity.this, R.layout.activity_main);
+        .setContentView(MainActivity.this, R.layout.activity_main);
 
     iconImageView = findViewById(R.id.iconImageView);
 
@@ -65,16 +63,18 @@ public class MainActivity extends AppCompatActivity {
     TextView darkSky = findViewById(R.id.darkSkyAttribution);
     darkSky.setMovementMethod(LinkMovementMethod.getInstance());
 
-    String apiKey = "a371e6cef5025d37a4a1039c6d26009b";
+    String apiKey = "57eaf3aa961968bf65b0619680588073";
+
+
     String forecastURL = "https://api.darksky.net/forecast/" + apiKey +
-            "/" + latitude + "," + longitude;
+        "/" + latitude + "," + longitude;
 
     if (isNetworkAvailable()) {
       OkHttpClient client = new OkHttpClient();
 
       Request request = new Request.Builder()
-              .url(forecastURL)
-              .build();
+          .url(forecastURL)
+          .build();
 
       Call call = client.newCall(request);
       call.enqueue(new Callback() {
@@ -94,14 +94,14 @@ public class MainActivity extends AppCompatActivity {
               Current current = forecast.getCurrent();
 
               final Current displayWeather = new Current(
-                      current.getLocationLabel(),
-                      current.getIcon(),
-                      current.getTime(),
-                      current.getTemperature(),
-                      current.getHumidity(),
-                      current.getPrecipChance(),
-                      current.getSummary(),
-                      current.getTimeZone()
+                  current.getLocationLabel(),
+                  current.getIcon(),
+                  current.getTime(),
+                  current.getTemperature(),
+                  current.getHumidity(),
+                  current.getPrecipChance(),
+                  current.getSummary(),
+                  current.getTimeZone()
               );
 
               binding.setWeather(displayWeather);
@@ -127,23 +127,23 @@ public class MainActivity extends AppCompatActivity {
       });
     }
     else {
-      Toast.makeText(this, getString(R.string.network_unavailable_message),
-              Toast.LENGTH_LONG).show();
+      Toast.makeText(this, R.string.network_unavailable_message,
+          Toast.LENGTH_LONG).show();
     }
   }
 
   private Forecast parseForecastData(String jsonData) throws JSONException {
-      Forecast forecast = new Forecast();
+    Forecast forecast = new Forecast();
 
-      forecast.setCurrent(getCurrentDetails(jsonData));
-      forecast.setHourlyForecast(getHourlyForecast(jsonData));
-      return forecast;
+    forecast.setCurrent(getCurrentDetails(jsonData));
+    forecast.setHourlyForecast(getHourlyForecast(jsonData));
+
+    return forecast;
   }
 
   private Hour[] getHourlyForecast(String jsonData) throws JSONException {
     JSONObject forecast = new JSONObject(jsonData);
     String timezone = forecast.getString("timezone");
-
     JSONObject hourly = forecast.getJSONObject("hourly");
     JSONArray data = hourly.getJSONArray("data");
 
@@ -151,9 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
     for (int i = 0; i < data.length(); i++){
       JSONObject jsonHour = data.getJSONObject(i);
-
       Hour hour = new Hour();
-
       hour.setSummary(jsonHour.getString("summary"));
       hour.setIcon(jsonHour.getString("icon"));
       hour.setTemperature(jsonHour.getDouble("temperature"));
@@ -191,8 +189,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private boolean isNetworkAvailable() {
-    ConnectivityManager manager = (ConnectivityManager)
-            getSystemService(Context.CONNECTIVITY_SERVICE);
+    ConnectivityManager manager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
     NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
     boolean isAvailable = false;
@@ -214,12 +211,12 @@ public class MainActivity extends AppCompatActivity {
     Toast.makeText(this, "Refreshing data", Toast.LENGTH_LONG).show();
   }
 
-  public void hourlyOnClick(View view){
+  public void hourlyOnClick(View view) {
     List<Hour> hours = Arrays.asList(forecast.getHourlyForecast());
 
     Intent intent = new Intent(this, HourlyForecastActivity.class);
     intent.putExtra("HourlyList", (Serializable) hours);
     startActivity(intent);
-
   }
+
 }

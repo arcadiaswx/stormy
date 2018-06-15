@@ -5,22 +5,24 @@
     <data>
         <variable
             name="hour"
-            type="com.arcadiasoftworks.stormy.weather.Hour"/>
+            type="com.arcadiasoftworks.stormy.Weather.Hour"/>
     </data>
     <RelativeLayout
         android:id="@+id/hourlyListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
         android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         tools:background="@color/appBackground">
 
         <TextView
             android:id="@+id/timeLabel"
             android:layout_width="80dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:text="@{String.valueOf(hour.time)}"
             android:textColor="@android:color/white"
@@ -32,12 +34,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_toRightOf="@+id/timeLabel"
             android:layout_toEndOf="@+id/timeLabel"
-            android:layout_marginStart="73dp"
-            app:srcCompat="@drawable/partly_cloudy" />
+            app:srcCompat="@drawable/partly_cloudy"
+            app:imageResource="@{hour.icon}"/>
 
         <TextView
             android:id="@+id/temperatureLabel"
@@ -50,7 +50,7 @@
             android:text="@{String.valueOf(hour.temperature)}"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            tools:text="100" />
+            tools:text="100"/>
 
         <TextView
             android:id="@+id/summaryLabel"
@@ -64,6 +64,6 @@
             android:text="@{String.valueOf(hour.summary)}"
             android:textColor="@android:color/white"
             android:textSize="24sp"
-            tools:text="Partly Cloudy"/>
+            tools:text="Partly cloudy"/>
     </RelativeLayout>
 </layout>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name = "weather"
-            type = "com.arcadiasoftworks.stormy.CurrentWeather"/>
+            type = "com.arcadiasoftworks.stormy.Weather.Current"/>
     </data>
     <android.support.constraint.ConstraintLayout
 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/appBackground"
-        tools:context="com.arcadiasoftworks.stormy.MainActivity">
+        tools:context="com.arcadiasoftworks.stormy.ui.MainActivity">
 
         <TextView
             android:id="@+id/temperatureView"
@@ -163,8 +163,9 @@
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
             android:text="@string/dark_sky_message"
+            android:textAllCaps="true"
             android:textColor="@color/half_white"
-            android:textColorLink="@color/half_white"
+            android:textColorLink="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -183,5 +184,23 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/refresh"/>
+
+        <Button
+            android:id="@+id/hourlyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:background="#40ffffff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:text="HOURLY FORECAST"
+            android:textColor="@android:color/white"
+            android:onClick="hourlyOnClick"
+            app:layout_constraintBottom_toTopOf="@+id/darkSkyAttribution"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/summaryValue"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

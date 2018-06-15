@@ -1,4 +1,4 @@
-package com.arcadiasoftworks.stormy.weather;
+package com.arcadiasoftworks.stormy.Weather;
 
 import com.arcadiasoftworks.stormy.R;
 
